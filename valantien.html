@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="th" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valentine Surprise 💖</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&amp;family=Kanit:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      box-sizing: border-box;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    * {
+      font-family: 'Mitr', 'Kanit', sans-serif;
+    }
+    
+    .page {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow: auto;
+    }
+    
+    .page.active {
+      display: flex;
+    }
+    
+    /* Floating Hearts Animation */
+    .floating-heart {
+      position: absolute;
+      animation: floatUp 4s ease-in-out infinite;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100%) rotate(0deg) scale(0.5);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.6;
+      }
+      80% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-100%) rotate(15deg) scale(1);
+        opacity: 0;
+      }
+    }
+    
+    /* Heartbeat Animation */
+    .heartbeat {
+      animation: heartbeat 1.2s ease-in-out infinite;
+    }
+    
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      15% { transform: scale(1.15); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.1); }
+      60% { transform: scale(1); }
+    }
+    
+    /* Pulse Glow */
+    .pulse-glow {
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulseGlow {
+      0%, 100% { 
+        box-shadow: 0 0 20px rgba(255, 182, 193, 0.4),
+                    0 0 40px rgba(255, 182, 193, 0.2);
+      }
+      50% { 
+        box-shadow: 0 0 30px rgba(255, 182, 193, 0.6),
+                    0 0 60px rgba(255, 182, 193, 0.4);
+      }
+    }
+    
+    /* Button Hover Effect */
+    .love-btn {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .love-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3);
+    }
+    
+    .love-btn:active {
+      transform: translateY(-1px);
+    }
+    
+    /* Shake Animation for Wrong Answer */
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
+    }
+    
+    /* Sparkle Animation */
+    .sparkle {
+      animation: sparkle 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    
+    /* Video Frame Hearts */
+    .corner-heart {
+      position: absolute;
+      font-size: 1.5rem;
+      animation: cornerPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes cornerPulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+    
+    /* Fade In Animation */
+    .fade-in {
+      animation: fadeIn 0.8s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Input Focus Effect */
+    .code-input:focus {
+      outline: none;
+      border-color: #ec4899 !important;
+      box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.2);
+    }
+    
+    /* Confetti Hearts */
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 50;
+    }
+    
+    .confetti-heart {
+      position: absolute;
+      top: -20px;
+      animation: confettiFall 3s linear forwards;
+    }
+    
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100%) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Video Styling */
+    .video-wrapper {
+      position: relative;
+      display: inline-block;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
+    }
+
+    .video-wrapper video {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="m-0 p-0 overflow-hidden">
+  <div id="app-container" class="w-full h-full relative"><!-- Page 1: Welcome -->
+   <div id="page1" class="page active flex-col items-center justify-center text-center p-6" style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 50%, #f9a8d4 100%);"><!-- Floating Hearts Background -->
+    <div id="hearts-container" class="absolute inset-0 overflow-hidden pointer-events-none"></div><!-- Main Content -->
+    <div class="relative z-10 fade-in"><!-- Big Heart -->
+     <div class="heartbeat text-8xl md:text-9xl mb-6">
+      💖
+     </div><!-- Title -->
+     <h1 id="main-title" class="text-3xl md:text-5xl font-semibold mb-4" style="color: #be185d;">Happy Valentine's Day 💖</h1><!-- Subtitle -->
+     <p class="text-lg md:text-xl mb-8" style="color: #9d174d;">✨ มีสิ่งพิเศษรอเธออยู่ ✨</p><!-- Decorative Hearts -->
+     <div class="flex justify-center gap-4 mb-8"><span class="sparkle text-2xl" style="animation-delay: 0s;">💕</span> <span class="sparkle text-2xl" style="animation-delay: 0.3s;">💗</span> <span class="sparkle text-2xl" style="animation-delay: 0.6s;">💓</span> <span class="sparkle text-2xl" style="animation-delay: 0.9s;">💗</span> <span class="sparkle text-2xl" style="animation-delay: 1.2s;">💕</span>
+     </div><!-- Button --> <button onclick="goToPage(2)" class="love-btn px-8 py-4 text-xl font-medium text-white rounded-full pulse-glow" style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);"> กดเพื่อไปต่อ 💝 </button>
+    </div>
+   </div><!-- Page 2: Secret Code -->
+   <div id="page2" class="page flex-col items-center justify-center text-center p-6" style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);">
+    <div class="relative z-10 fade-in max-w-md w-full"><!-- Lock Heart -->
+     <div class="text-6xl md:text-7xl mb-6 heartbeat">
+      🔐💕
+     </div><!-- Question -->
+     <h2 id="secret-question" class="text-2xl md:text-3xl font-semibold mb-2" style="color: #be185d;">จำวันที่สำคัญของเราได้ไหม 💕</h2>
+     <p class="text-base mb-6" style="color: #9d174d;">กรอกรหัสลับเพื่อปลดล็อคเซอร์ไพรส์</p><!-- Input -->
+     <div class="mb-6"><input type="number" id="code-input" class="code-input w-48 text-center text-3xl font-semibold py-4 px-6 rounded-2xl border-4 transition-all duration-300" style="border-color: #f9a8d4; background: white; color: #be185d;" placeholder="____" maxlength="4">
+     </div><!-- Error Message (Hidden by default) -->
+     <div id="error-message" class="hidden mb-6">
+      <p class="text-2xl md:text-3xl font-bold" style="color: #db2777;">ลืมแล้วอ่อ 😢</p>
+      <p class="text-sm mt-2" style="color: #9d174d;">ลองใหม่อีกครั้งนะ 💔</p>
+     </div><!-- Buttons -->
+     <div class="flex flex-col gap-3 items-center"><button onclick="checkCode()" class="love-btn px-8 py-3 text-lg font-medium text-white rounded-full" style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);"> ยืนยัน 💖 </button> <button onclick="goToPage(1)" class="text-sm underline transition-colors hover:text-pink-700" style="color: #9d174d;"> ← กลับหน้าแรก </button>
+     </div><!-- Hint -->
+     <p class="text-xs mt-8 opacity-60" style="color: #9d174d;">💡 Hint: วันสำคัญของเรา (ddmm)</p>
+    </div>
+   </div><!-- Page 3: Video Surprise -->
+   <div id="page3" class="page flex-col items-center justify-center text-center p-6" style="background: linear-gradient(135deg, #fce7f3 0%, #fdf2f8 50%, #fff1f2 100%);"><!-- Confetti Container -->
+    <div id="confetti-container" class="confetti-container"></div>
+    <div class="relative z-10 fade-in max-w-2xl w-full"><!-- Celebration -->
+     <div class="text-5xl md:text-6xl mb-4">
+      🎉💝🎉
+     </div><!-- Title -->
+     <h2 id="surprise-message" class="text-2xl md:text-4xl font-semibold mb-6" style="color: #be185d;">เซอร์ไพรส์สำหรับเธอ 💝</h2><!-- Video Frame -->
+     <div class="relative inline-block rounded-3xl p-2 mb-6" style="background: linear-gradient(135deg, #f9a8d4 0%, #ec4899 50%, #db2777 100%);"><!-- Corner Hearts --> <span class="corner-heart" style="top: -15px; left: -15px; animation-delay: 0s;">💗</span> <span class="corner-heart" style="top: -15px; right: -15px; animation-delay: 0.5s;">💕</span> <span class="corner-heart" style="bottom: -15px; left: -15px; animation-delay: 1s;">💕</span> <span class="corner-heart" style="bottom: -15px; right: -15px; animation-delay: 1.5s;">💗</span> <!-- Video Container -->
+      <div class="video-wrapper" style="max-width: 560px; width: 100%;">
+       <video id="video-frame" style="max-width: 100%; height: auto;" controls loading="lazy">
+  <source src="love.mp4" type="video/mp4">
+  วิดีโอไม่สามารถแสดงได้ เบราว์เซอร์ของคุณไม่รองรับวิดีโอ
+</video>
+
+      </div>
+     </div><!-- Message -->
+     <p class="text-lg md:text-xl mb-6" style="color: #9d174d;">รักเธอนะ 💕✨</p><!-- Decorative -->
+     <div class="flex justify-center gap-3"><span class="sparkle text-xl" style="animation-delay: 0s;">💖</span> <span class="sparkle text-xl" style="animation-delay: 0.2s;">💗</span> <span class="sparkle text-xl" style="animation-delay: 0.4s;">💕</span> <span class="sparkle text-xl" style="animation-delay: 0.6s;">💓</span> <span class="sparkle text-xl" style="animation-delay: 0.8s;">💖</span>
+     </div><!-- Back Button --> <button onclick="goToPage(1)" class="mt-8 text-sm underline transition-colors hover:text-pink-700" style="color: #9d174d;"> ← เริ่มใหม่อีกครั้ง </button>
+    </div>
+   </div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      main_title: 'Happy Valentine\'s Day 💖',
+      secret_question: 'จำวันที่สำคัญของเราได้ไหม 💕',
+      surprise_message: 'เซอร์ไพรส์สำหรับเธอ 💝',
+      background_color: '#fce7f3',
+      text_color: '#be185d',
+      button_color: '#ec4899',
+      accent_color: '#f9a8d4',
+      secondary_color: '#ffffff'
+    };
+    
+    let config = { ...defaultConfig };
+    
+    // Page Navigation
+    function goToPage(pageNum) {
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+      
+      const targetPage = document.getElementById('page' + pageNum);
+      if (targetPage) {
+        targetPage.classList.add('active');
+        
+        // Trigger animations
+        const fadeElements = targetPage.querySelectorAll('.fade-in');
+        fadeElements.forEach(el => {
+          el.style.animation = 'none';
+          el.offsetHeight; // Trigger reflow
+          el.style.animation = 'fadeIn 0.8s ease-out';
+        });
+        
+        // Show confetti on page 3
+        if (pageNum === 3) {
+          showConfetti();
+        }
+      }
+    }
+    
+    // Check Secret Code
+    function checkCode() {
+      const input = document.getElementById('code-input');
+      const errorMessage = document.getElementById('error-message');
+      const code = input.value;
+      
+      if (code === '1401') {
+        // Correct code
+        errorMessage.classList.add('hidden');
+        goToPage(3);
+      } else {
+        // Wrong code
+        errorMessage.classList.remove('hidden');
+        input.classList.add('shake');
+        input.style.borderColor = '#db2777';
+        
+        setTimeout(() => {
+          input.classList.remove('shake');
+        }, 500);
+        
+        setTimeout(() => {
+          input.style.borderColor = '#f9a8d4';
+        }, 1000);
+      }
+    }
+    
+    // Enter key support for code input
+    document.getElementById('code-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        checkCode();
+      }
+    });
+    
+    // Create Floating Hearts
+    function createFloatingHearts() {
+      const container = document.getElementById('hearts-container');
+      if (!container) return;
+      
+      const hearts = ['💖', '💕', '💗', '💓', '🩷', '❤️'];
+      
+      for (let i = 0; i < 15; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'floating-heart';
+        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+        heart.style.animationDelay = Math.random() * 4 + 's';
+        heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        container.appendChild(heart);
+      }
+    }
+    
+    // Show Confetti Hearts
+    function showConfetti() {
+      const container = document.getElementById('confetti-container');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      const hearts = ['💖', '💕', '💗', '💓', '🩷', '❤️', '💝'];
+      
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti-heart';
+          confetti.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.fontSize = (Math.random() * 20 + 12) + 'px';
+          confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+          container.appendChild(confetti);
+          
+          setTimeout(() => {
+            confetti.remove();
+          }, 3000);
+        }, i * 100);
+      }
+    }
+    
+    // Initialize floating hearts
+    createFloatingHearts();
+    
+    // Element SDK Integration
+    async function onConfigChange(newConfig) {
+      config = { ...defaultConfig, ...newConfig };
+      
+      // Update main title
+      const mainTitle = document.getElementById('main-title');
+      if (mainTitle) {
+        mainTitle.textContent = config.main_title || defaultConfig.main_title;
+      }
+      
+      // Update secret question
+      const secretQuestion = document.getElementById('secret-question');
+      if (secretQuestion) {
+        secretQuestion.textContent = config.secret_question || defaultConfig.secret_question;
+      }
+      
+      // Update surprise message
+      const surpriseMessage = document.getElementById('surprise-message');
+      if (surpriseMessage) {
+        surpriseMessage.textContent = config.surprise_message || defaultConfig.surprise_message;
+      }
+    }
+    
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+    
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['main_title', config.main_title || defaultConfig.main_title],
+        ['secret_question', config.secret_question || defaultConfig.secret_question],
+        ['surprise_message', config.surprise_message || defaultConfig.surprise_message]
+      ]);
+    }
+    
+    // Initialize SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cc61ed712ff7329',t:'MTc3MDgzNjc1Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
